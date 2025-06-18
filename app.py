@@ -6,7 +6,7 @@ import streamlit as st
 from PIL import Image
 from streamlit_drawable_canvas import st_canvas
 
-# ReportLab imports
+# ReportLab – pure-Python PDF generation
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage
 )
@@ -40,18 +40,12 @@ def generate_pdf_bytes(fields, sig_data):
 
     story = []
 
-    # ── HEADER ──
-    # Logo
+    # HEADER: logo + title + intro
     logo_data = base64.b64decode(fields["logo_b64"])
     logo_buf = io.BytesIO(logo_data)
-    logo = RLImage(logo_buf, width=40*mm, height=None)
-    story.append(logo)
-
-    # Title
+    story.append(RLImage(logo_buf, width=40*mm))
     story.append(Paragraph("SUPPLY AGREEMENT", title_style))
     story.append(Spacer(1, 4*mm))
-
-    # Intro
     intro = (
         "This agreement is issued in conjunction with our Terms of Business. "
         "Please contact us on <b>0800 772 3959</b> or email "
@@ -60,14 +54,14 @@ def generate_pdf_bytes(fields, sig_data):
     story.append(Paragraph(intro, normal))
     story.append(Spacer(1, 6*mm))
 
-    # ── DETAILS TABLE ──
-    details_data = [
+    # DETAILS TABLE
+    details = [
         ["<b>Your Details</b>", "", "<b>Supply Details</b>", ""],
         ["Company Name:", fields["company_name"], "For the Supply of:", fields["supply_of"]],
         ["Address:", fields["address"].replace("\n", "<br/>"), "Site Location:", fields["site_location"]],
         ["Company Reg No:", fields["reg_no"], "Start Date:", fields["start_date"]],
     ]
-    tbl = Table(details_data, colWidths=[40*mm, 70*mm, 40*mm, 40*mm])
+    tbl = Table(details, colWidths=[40*mm, 70*mm, 40*mm, 40*mm])
     tbl.setStyle(TableStyle([
         ("SPAN", (0,0), (1,0)), ("SPAN", (2,0), (3,0)),
         ("BACKGROUND", (0,0), (3,0), colors.lightgrey),
@@ -78,8 +72,8 @@ def generate_pdf_bytes(fields, sig_data):
     story.append(tbl)
     story.append(Spacer(1, 6*mm))
 
-    # ── RATES TABLE ──
-    rates_rows = [ ["Description","Rate","Basis"] ] + [ list(r) for r in fields["rates"] ]
+    # RATES TABLE
+    rates_rows = [["Description", "Rate", "Basis"]] + [list(r) for r in fields["rates"]]
     rates_tbl = Table(rates_rows, colWidths=[60*mm, 30*mm, 30*mm])
     rates_tbl.setStyle(TableStyle([
         ("BACKGROUND", (0,0), (-1,0), colors.lightgrey),
@@ -90,7 +84,7 @@ def generate_pdf_bytes(fields, sig_data):
     story.append(rates_tbl)
     story.append(Spacer(1, 6*mm))
 
-    # ── BREAKDOWN ──
+    # BREAKDOWN
     breakdown = [
         ["<b>BREAKDOWN</b>"],
         ["First 40 hours Mon–Fri (including breaks)"],
@@ -106,39 +100,33 @@ def generate_pdf_bytes(fields, sig_data):
     story.append(bd_tbl)
     story.append(Spacer(1, 6*mm))
 
-    # ── ADDITIONAL INFO ──
+    # ADDITIONAL INFO
     story.append(Paragraph("<b>Additional Information</b>", normal))
     story.append(Paragraph(fields["terms"].replace("\n", "<br/>"), normal))
     story.append(Spacer(1, 10*mm))
 
-    # ── SIGNATURES ──
-    # PRL signature
+    # SIGNATURES
     kt_data = base64.b64decode(fields["kt_b64"])
     kt_buf = io.BytesIO(kt_data)
-    prl_sig = RLImage(kt_buf, width=50*mm, height=None)
+    prl_sig = RLImage(kt_buf, width=50*mm)
 
-    # Client signature from canvas data
     arr = sig_data.astype("uint8")
-    im = Image.fromarray(arr, "RGBA").convert("RGB")
+    img = Image.fromarray(arr, "RGBA").convert("RGB")
     client_buf = io.BytesIO()
-    im.save(client_buf, format="PNG")
+    img.save(client_buf, format="PNG")
     client_buf.seek(0)
-    client_sig = RLImage(client_buf, width=50*mm, height=None)
+    client_sig = RLImage(client_buf, width=50*mm)
 
     sig_table = Table([
         [
-            [
-                prl_sig,
-                Paragraph(f"Signed by: {fields['signer_name']}", normal),
-                Paragraph(f"Position: {fields['signer_position']}", normal),
-                Paragraph(f"Date: {fields['signer_date']}", normal)
-            ],
-            [
-                client_sig,
-                Paragraph(f"Signed by: {fields['client_name']}", normal),
-                Paragraph(f"Position: {fields['client_position']}", normal),
-                Paragraph(f"Date: {fields['client_date']}", normal)
-            ]
+            [prl_sig,
+             Paragraph(f"Signed by: {fields['signer_name']}", normal),
+             Paragraph(f"Position: {fields['signer_position']}", normal),
+             Paragraph(f"Date: {fields['signer_date']}", normal)],
+            [client_sig,
+             Paragraph(f"Signed by: {fields['client_name']}", normal),
+             Paragraph(f"Position: {fields['client_position']}", normal),
+             Paragraph(f"Date: {fields['client_date']}", normal)]
         ]
     ], colWidths=[80*mm, 80*mm])
     sig_table.setStyle(TableStyle([
@@ -154,35 +142,31 @@ def generate_pdf_bytes(fields, sig_data):
 def main():
     st.set_page_config(page_title="PRL Site Solutions – Supply Agreement", layout="wide")
 
-    # ─── Global CSS Styling ───────────────────────────────
+    # GLOBAL CSS
     st.markdown("""
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
       * { font-family: 'Roboto', sans-serif !important; }
-      .stApp .block-container {
-        padding-top: 80px !important; max-width: 760px; margin: auto;
-      }
+      .stApp .block-container { padding-top:80px!important; max-width:760px; margin:auto; }
       .header-card, .section-card {
-        background: #1f1f1f; padding: 20px; margin-bottom: 30px;
-        border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        background:#1f1f1f; padding:20px; margin-bottom:30px;
+        border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.5);
       }
-      .header-card h2, .section-card h2 {
-        color: #00d1ff; margin-top: 0;
-      }
+      .header-card h2, .section-card h2 { color:#00d1ff; margin-top:0; }
       .stTextInput>div>input, .stTextArea>div>textarea {
-        background: #2a2a2a !important; border: 1px solid #444 !important;
-        border-radius: 6px !important; color: #eee !important;
+        background:#2a2a2a!important; border:1px solid #444!important;
+        border-radius:6px!important; color:#eee!important;
       }
       .stButton>button {
-        background: #00aaff !important; color: #fff !important;
-        border-radius: 6px !important; padding: 0.6em 1em !important;
-        font-weight: 600 !important;
+        background:#00aaff!important; color:#fff!important;
+        border-radius:6px!important; padding:.6em 1em!important;
+        font-weight:600!important;
       }
-      .stButton>button:hover { background: #008fcc !important; }
+      .stButton>button:hover { background:#008fcc!important; }
     </style>
     """, unsafe_allow_html=True)
 
-    # ─── HEADER ─────────────────────────────────────────────
+    # HEADER
     with st.container():
         st.markdown("<div class='header-card'>", unsafe_allow_html=True)
         cols = st.columns([1, 4])
@@ -196,7 +180,7 @@ def main():
             )
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ─── YOUR DETAILS ───────────────────────────────────────
+    # YOUR DETAILS
     with st.container():
         st.markdown("<div class='section-card'>", unsafe_allow_html=True)
         st.markdown("## Your Details")
@@ -205,7 +189,7 @@ def main():
         reg_no       = st.text_input("Company Reg No", "14358717")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ─── SUPPLY DETAILS ─────────────────────────────────────
+    # SUPPLY DETAILS
     with st.container():
         st.markdown("<div class='section-card'>", unsafe_allow_html=True)
         st.markdown("## Supply Details")
@@ -214,18 +198,16 @@ def main():
         start_date    = st.date_input("Start Date")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ─── CHARGE RATES ───────────────────────────────────────
+    # CHARGE RATES
     with st.container():
         st.markdown("<div class='section-card'>", unsafe_allow_html=True)
         st.markdown("## Our Charge Rates")
         default_rates = {
-            "Description": [
-                "Basic Rate (Day)", "Basic Rate (Night)",
-                "Overtime Rate (1)", "Overtime Rate (2)",
-                "Expenses", "Lodge"
-            ],
-            "Rate": ["£29.90", "£38.87", "£42.90", "£50.96", "£–", "£60"],
-            "Basis": ["Per Hour", "Per Hour", "Per Hour", "Per Hour", "Per Day", ""]
+            "Description": ["Basic Rate (Day)","Basic Rate (Night)",
+                            "Overtime Rate (1)","Overtime Rate (2)",
+                            "Expenses","Lodge"],
+            "Rate": ["£29.90","£38.87","£42.90","£50.96","£–","£60"],
+            "Basis": ["Per Hour","Per Hour","Per Hour","Per Hour","Per Day",""]
         }
         df_rates = pd.DataFrame(default_rates)
         try:
@@ -235,46 +217,38 @@ def main():
         rates = list(rates_df.itertuples(index=False, name=None))
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ─── ADDITIONAL INFO ────────────────────────────────────
+    # ADDITIONAL INFO
     with st.container():
         st.markdown("<div class='section-card'>", unsafe_allow_html=True)
         st.markdown("## Additional Information")
         terms = st.text_area("Notes (e.g., breaks)", "Breaks to be paid (15 min, 30 min, 15 min).", height=80)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ─── CLIENT SIGNATURE ───────────────────────────────────
+    # CLIENT SIGNATURE
     with st.container():
         st.markdown("<div class='section-card'>", unsafe_allow_html=True)
         st.markdown("## Client Signature")
         client_name     = st.text_input("Printed Name", key="c_name")
         client_position = st.text_input("Position",     key="c_pos")
         client_date     = st.date_input("Date",         key="c_date")
-        client_canvas   = st_canvas(
-            stroke_width=2,
-            stroke_color="#000000",
-            background_color="#FFFFFF",
-            height=120, width=400,
-            drawing_mode="freedraw",
-            key="c_canvas"
-        )
+        client_canvas   = st_canvas(stroke_width=2, stroke_color="#000",
+                                    background_color="#fff",
+                                    height=120, width=400,
+                                    drawing_mode="freedraw", key="c_canvas")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ─── GENERATE & DOWNLOAD & EMAIL LINK ──────────────────
+    # GENERATE & DOWNLOAD & EMAIL
     if st.button("📄 Generate PDF"):
         if not client_name.strip() or client_canvas.image_data is None:
             st.error("⚠️ Please enter the client's name and draw their signature.")
         else:
             fields = {
-                "logo_b64": logo_b64,
-                "kt_b64": kt_b64,
-                "company_name": company_name,
-                "address": address,
-                "reg_no": reg_no,
-                "supply_of": supply_of,
+                "logo_b64": logo_b64, "kt_b64": kt_b64,
+                "company_name": company_name, "address": address,
+                "reg_no": reg_no, "supply_of": supply_of,
                 "site_location": site_location,
                 "start_date": start_date.strftime("%B %Y"),
-                "rates": rates,
-                "terms": terms,
+                "rates": rates, "terms": terms,
                 "client_name": client_name,
                 "client_position": client_position,
                 "client_date": client_date.strftime("%d/%m/%Y"),
@@ -282,8 +256,7 @@ def main():
                 "signer_position": "Managing Director",
                 "signer_date": "13/06/2025",
             }
-            pdf_bytes = generate_pdf_bytes(fields, client_canvas.image_data)
-            st.session_state["pdf"] = pdf_bytes
+            st.session_state["pdf"] = generate_pdf_bytes(fields, client_canvas.image_data)
             st.session_state["company"] = company_name
             st.success("✅ PDF is ready!")
 
