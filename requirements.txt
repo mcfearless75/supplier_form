@@ -1,0 +1,6 @@
+streamlit
+Pillow
+pandas
+jinja2
+weasyprint
+streamlit-drawable-canvas

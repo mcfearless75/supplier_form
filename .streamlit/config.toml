@@ -1,0 +1,7 @@
+[theme]
+base="dark"
+primaryColor="#00D1FF"              # neon cyan
+backgroundColor="#0D1117"           # deep near-black
+secondaryBackgroundColor="#161B22"  # panel backgrounds
+textColor="#C9D1D9"                 # off-white
+font="monospace"
