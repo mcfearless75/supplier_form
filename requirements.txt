@@ -1,6 +1,5 @@
 streamlit
 Pillow
 pandas
-jinja2
 reportlab
 streamlit-drawable-canvas
