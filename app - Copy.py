@@ -1,12 +1,12 @@
 import io
 import base64
+
 import pandas as pd
 import streamlit as st
 from PIL import Image
 from streamlit_drawable_canvas import st_canvas
 from jinja2 import Environment, FileSystemLoader
 import pdfkit
-from datetime import datetime
 
 # ─── Load & encode static images ────────────────────────
 with open("logo.png", "rb") as f:
@@ -170,15 +170,6 @@ def main():
         )
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ─── PRL SIGNATURE ───────────────────────────────────────
-    prl_date = datetime.today().strftime("%d/%m/%Y")
-    with st.container():
-        st.markdown("<div class='section-card'>", unsafe_allow_html=True)
-        st.markdown("## PRL Signature")
-        prl_position = "Managing Director"
-        st.write(f"Date: {prl_date}")
-        st.markdown("</div>", unsafe_allow_html=True)
-
     # ─── GENERATE & DOWNLOAD & EMAIL LINK ──────────────────
     if st.button("📄 Generate PDF"):
         if not client_name.strip() or client_canvas.image_data is None:
@@ -200,7 +191,7 @@ def main():
                 "client_date": client_date.strftime("%d/%m/%Y"),
                 "signer_name": "Keenan Thomas",
                 "signer_position": "Managing Director",
-                "signer_date": prl_date
+                "signer_date": "13/06/2025"
             }
             pdf_bytes = generate_pdf_bytes(fields, client_canvas.image_data)
             st.session_state["pdf"] = pdf_bytes
