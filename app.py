@@ -126,21 +126,28 @@ def main():
     # ─── GENERATE & DOWNLOAD & EMAIL LINK ──────────────────
     if st.button("📄 Generate PDF"):
         fields = {
-            "logo_b64":      logo_b64,
-            "kt_b64":        kt_b64,
-            "company_name":  company_name,
-            "address":       address.replace("\n", "<br/>"),
-            "reg_no":        reg_no,
-            "supply_of":     supply_of,
-            "site_location": site_location,
-            "start_date":    start_date.strftime("%B %Y"),
-            "rates":         rates,
-            "terms":         terms.replace("\n", "<br/>"),
-            "signer_name":   "Keenan Thomas",
-            "signer_position": "Managing Director",
-            "signer_date":   prl_date
+            "logo_b64":       logo_b64,
+            "kt_b64":         kt_b64,
+            "company_name":   company_name,
+            "address":        address.replace("\n", "<br/>"),
+            "reg_no":         reg_no,
+            "supply_of":      supply_of,
+            "site_location":  site_location,
+            "start_date":     start_date.strftime("%B %Y"),
+            "rates":          rates,
+            "terms":          terms.replace("\n", "<br/>"),
+            "signer_name":    "Keenan Thomas",
+            "signer_position":"Managing Director",
+            "signer_date":    prl_date
         }
-        pdf_bytes = generate_pdf_bytes(fields)
+
+        try:
+            pdf_bytes = generate_pdf_bytes(fields)
+        except Exception as err:
+            st.error("❌ PDF generation failed:")
+            st.error(f"  • {type(err).__name__}: {err}")
+            return
+
         st.session_state["pdf"]     = pdf_bytes
         st.session_state["company"] = company_name
         st.success("✅ PDF is ready!")
@@ -154,6 +161,7 @@ def main():
             file_name=f"supply_agreement_{cname}.pdf",
             mime="application/pdf"
         )
+
         subject = f"New Supply Agreement – {cname}".replace(" ", "%20")
         body    = (
             "Hello,%0A%0A"
