@@ -4,59 +4,35 @@
   <meta charset="utf-8"/>
   <style>
     body { font-family: Arial; margin:20px; font-size:12px; line-height:1.4; }
-
-    /* HEADER */
     .header { display:flex; align-items:center; margin-bottom:20px; }
     .header img { height:40px; }
     .header .company { font-size:20px; font-weight:bold; margin-left:10px; }
     .title { text-align:right; font-size:16px; font-weight:bold; margin-top:-40px; margin-bottom:20px; }
     .intro { font-size:11px; margin-bottom:20px; }
-
-    /* TABLES */
     table { border-collapse:collapse; width:100%; margin-bottom:20px; }
     th, td { border:1px solid #000; padding:4px 6px; vertical-align:top; }
     th { background:#f0f0f0; text-align:left; }
-
-    /* SIDE-BY-SIDE */
     .outer { margin-bottom:20px; }
     .outer td { border:none; padding:0; vertical-align:top; }
     .inner { width:100%; }
     .inner th, .inner td { border:1px solid #000; }
-
-    /* ADDITIONAL INFO */
     .additional { border:1px solid #000; padding:8px; min-height:40px; margin:20px 0; }
     .invoice-note { font-size:10px; margin-bottom:20px; }
-
-    /* SIGNATURE BLOCKS */
     .signatures { margin:30px 0 20px; }
     .sig-block { display:inline-block; width:48%; vertical-align:top; }
-
-    /* Updated: constrain but preserve aspect ratio */
-    .sig-block img {
-      max-width: 100%;
-      max-height: 80px;
-      width: auto;
-      height: auto;
-      border: 1px solid #000;
-      margin-bottom: 5px;
-    }
-
+    .sig-block img { max-width:100%; max-height:80px; width:auto; height:auto; border:1px solid #000; margin-bottom:5px; }
     .sig-table { width:100%; border-collapse:collapse; margin-bottom:20px; }
     .sig-table th, .sig-table td { border:1px solid #000; padding:3px 5px; font-size:11px; }
     .sig-table th { background:#f0f0f0; }
-
     .footer-note { font-size:10px; margin-top:20px; }
   </style>
 </head>
 <body>
-
-  <!-- HEADER with embedded logo -->
   <div class="header">
     <img src="data:image/png;base64,{{ logo_b64 }}" alt="PRL Logo"/>
     <div class="company">PRL SITE SOLUTIONS</div>
   </div>
   <div class="title">SUPPLY AGREEMENT</div>
-
   <p class="intro">
     This agreement is issued in conjunction with our Terms of Business. It confirms the details of the supply of temporary workers to you and our agreed charge rates (exclusive of VAT).<br/>
     Please contact us on <strong>0800 772 3959</strong> or email <strong>info@prlsitesolutions.co.uk</strong> if you have any queries.
@@ -108,7 +84,6 @@
 
   <!-- ADDITIONAL INFORMATION -->
   <div class="additional">{{ terms }}</div>
-
   <p class="invoice-note">
     We will invoice you on a weekly basis. Invoices must be paid within the days and terms specified in our Terms of Business.
   </p>
@@ -126,14 +101,14 @@
       </table>
     </div>
 
-    <!-- Client drawn signature -->
+    <!-- Blank client signature -->
     <div class="sig-block" style="float:right;">
-      <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature"/>
+      <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature Placeholder"/>
       <table class="sig-table">
         <tr><th colspan="2">Signed on behalf of the Client</th></tr>
-        <tr><td>Signed by:</td><td>{{ client_name }}</td></tr>
-        <tr><td>Position:</td><td>{{ client_position }}</td></tr>
-        <tr><td>Date:</td><td>{{ client_date }}</td></tr>
+        <tr><td>Signed by:</td><td>&nbsp;</td></tr>
+        <tr><td>Position:</td><td>&nbsp;</td></tr>
+        <tr><td>Date:</td><td>&nbsp;</td></tr>
       </table>
     </div>
   </div>
@@ -141,6 +116,5 @@
   <p class="footer-note">
     Non‐acknowledgement of this agreement and acceptance of temporary workers supplied to you by PRL Site Solutions will constitute acceptance of these terms and rates together with our Terms of Business.
   </p>
-
 </body>
 </html>

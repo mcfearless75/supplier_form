@@ -3,7 +3,6 @@ import base64
 import pandas as pd
 import streamlit as st
 from PIL import Image
-from streamlit_drawable_canvas import st_canvas
 from jinja2 import Environment, FileSystemLoader
 import pdfkit
 from datetime import datetime
@@ -14,13 +13,12 @@ with open("logo.png", "rb") as f:
 with open("kt.png", "rb") as f:
     kt_b64 = base64.b64encode(f.read()).decode()
 
-def generate_pdf_bytes(fields, sig_data):
-    """Render the Jinja2 HTML template to PDF bytes, embedding the signature."""
-    # Convert signature array → PNG → base64
-    arr = sig_data.astype("uint8")
-    img = Image.fromarray(arr, "RGBA").convert("RGB")
+def generate_pdf_bytes(fields):
+    """Render the Jinja2 HTML template to PDF bytes, with a blank signature box."""
+    # Generate a blank white PNG for the client signature
+    blank = Image.new("RGB", (400, 120), "white")
     buf = io.BytesIO()
-    img.save(buf, format="PNG")
+    blank.save(buf, format="PNG")
     client_sig_b64 = base64.b64encode(buf.getvalue()).decode()
 
     # Render HTML
@@ -30,67 +28,32 @@ def generate_pdf_bytes(fields, sig_data):
 
     # HTML → PDF: point at the Linux wkhtmltopdf binary
     config = pdfkit.configuration(wkhtmltopdf="/usr/bin/wkhtmltopdf")
-    options = {
-        "enable-local-file-access": None,
-    }
+    options = {"enable-local-file-access": None}
     return pdfkit.from_string(html, False, configuration=config, options=options)
 
 def main():
     st.set_page_config(page_title="PRL Site Solutions – Supply Agreement", layout="wide")
 
     # ─── Global CSS: Roboto + Card Styling ─────────────────
-    st.markdown("""
-    <style>
-      /* 1) Import Roboto */
+    st.markdown("""<style>
       @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
-      /* 2) Apply to every element */
-      * {
-        font-family: 'Roboto', sans-serif !important;
-      }
-
-      /* 3) Top padding so logo never gets cut */
-      .stApp .block-container {
-        padding-top: 80px !important;
-        max-width: 760px;
-        margin: auto;
-      }
-
-      /* 4) Card styles for header & sections */
+      * { font-family: 'Roboto', sans-serif !important; }
+      .stApp .block-container { padding-top:80px!important; max-width:760px; margin:auto; }
       .header-card, .section-card {
-        background: #1f1f1f;
-        padding: 20px;
-        margin-bottom: 30px;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        background:#1f1f1f; padding:20px; margin-bottom:30px;
+        border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.5);
       }
-      .header-card h2, .section-card h2 {
-        color: #00d1ff;
-        margin-top: 0;
+      .header-card h2, .section-card h2 { color:#00d1ff; margin-top:0; }
+      .stTextInput>div>input, .stTextArea>div>textarea {
+        background:#2a2a2a!important; border:1px solid #444!important;
+        border-radius:6px!important; color:#eee!important;
       }
-
-      /* 5) Input styling */
-      .stTextInput>div>input,
-      .stTextArea>div>textarea {
-        background: #2a2a2a !important;
-        border: 1px solid #444 !important;
-        border-radius: 6px !important;
-        color: #eee !important;
-      }
-
-      /* 6) Button styling */
       .stButton>button {
-        background: #00aaff !important;
-        color: #fff !important;
-        border-radius: 6px !important;
-        padding: 0.6em 1em !important;
-        font-weight: 600 !important;
+        background:#00aaff!important; color:#fff!important;
+        border-radius:6px!important; padding:.6em 1em!important; font-weight:600!important;
       }
-      .stButton>button:hover {
-        background: #008fcc !important;
-      }
-    </style>
-    """, unsafe_allow_html=True)
+      .stButton>button:hover { background:#008fcc!important; }
+    </style>""", unsafe_allow_html=True)
 
     # ─── HEADER ─────────────────────────────────────────────
     with st.container():
@@ -152,72 +115,45 @@ def main():
         terms = st.text_area("Notes (e.g., breaks)", "Breaks to be paid (15 min, 30 min, 15 min).", height=80)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ─── CLIENT SIGNATURE ───────────────────────────────────
-    with st.container():
-        st.markdown("<div class='section-card'>", unsafe_allow_html=True)
-        st.markdown("## Client Signature")
-        client_name     = st.text_input("Printed Name", key="c_name")
-        client_position = st.text_input("Position",     key="c_pos")
-        client_date     = st.date_input("Date",         key="c_date")
-        client_canvas   = st_canvas(
-            stroke_width=2,
-            stroke_color="#000000",
-            background_color="#FFFFFF",
-            height=120,
-            width=400,
-            drawing_mode="freedraw",
-            key="c_canvas"
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
-
     # ─── PRL SIGNATURE ───────────────────────────────────────
     prl_date = datetime.today().strftime("%d/%m/%Y")
     with st.container():
         st.markdown("<div class='section-card'>", unsafe_allow_html=True)
         st.markdown("## PRL Signature")
-        prl_position = "Managing Director"
         st.write(f"Date: {prl_date}")
         st.markdown("</div>", unsafe_allow_html=True)
 
     # ─── GENERATE & DOWNLOAD & EMAIL LINK ──────────────────
     if st.button("📄 Generate PDF"):
-        if not client_name.strip() or client_canvas.image_data is None:
-            st.error("⚠️ Please enter the client's name and draw their signature.")
-        else:
-            fields = {
-                "logo_b64": logo_b64,
-                "kt_b64": kt_b64,
-                "company_name": company_name,
-                "address": address.replace("\n", "<br/>"),
-                "reg_no": reg_no,
-                "supply_of": supply_of,
-                "site_location": site_location,
-                "start_date": start_date.strftime("%B %Y"),
-                "rates": rates,
-                "terms": terms.replace("\n", "<br/>"),
-                "client_name": client_name,
-                "client_position": client_position,
-                "client_date": client_date.strftime("%d/%m/%Y"),
-                "signer_name": "Keenan Thomas",
-                "signer_position": "Managing Director",
-                "signer_date": prl_date
-            }
-            pdf_bytes = generate_pdf_bytes(fields, client_canvas.image_data)
-            st.session_state["pdf"] = pdf_bytes
-            st.session_state["company"] = company_name
-            st.success("✅ PDF is ready!")
+        fields = {
+            "logo_b64":      logo_b64,
+            "kt_b64":        kt_b64,
+            "company_name":  company_name,
+            "address":       address.replace("\n", "<br/>"),
+            "reg_no":        reg_no,
+            "supply_of":     supply_of,
+            "site_location": site_location,
+            "start_date":    start_date.strftime("%B %Y"),
+            "rates":         rates,
+            "terms":         terms.replace("\n", "<br/>"),
+            "signer_name":   "Keenan Thomas",
+            "signer_position": "Managing Director",
+            "signer_date":   prl_date
+        }
+        pdf_bytes = generate_pdf_bytes(fields)
+        st.session_state["pdf"]     = pdf_bytes
+        st.session_state["company"] = company_name
+        st.success("✅ PDF is ready!")
 
     if "pdf" in st.session_state:
         pdf_data = st.session_state["pdf"]
         cname    = st.session_state["company"]
-
         st.download_button(
             "⬇️ Download Supply Agreement PDF",
             data=pdf_data,
             file_name=f"supply_agreement_{cname}.pdf",
             mime="application/pdf"
         )
-
         subject = f"New Supply Agreement – {cname}".replace(" ", "%20")
         body    = (
             "Hello,%0A%0A"
@@ -225,7 +161,6 @@ def main():
             "Best regards,%0APRLSiteSolutions"
         )
         mailto = f"mailto:info@prlsitesolutions.co.uk?subject={subject}&body={body}"
-
         st.markdown(
             f'<a href="{mailto}" style="display:inline-block;margin-top:10px;'
             'padding:0.6em 1em;background:#00aaff;color:#fff;border-radius:6px;'
