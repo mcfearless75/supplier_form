@@ -28,11 +28,11 @@ def generate_pdf_bytes(fields, sig_data):
     tpl = env.get_template("template.html")
     html = tpl.render(**fields, client_sig_b64=client_sig_b64)
 
-    # HTML → PDF
-    config  = pdfkit.configuration(
-        wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
-    )
-    options = {"enable-local-file-access": None}
+    # HTML → PDF: point at the Linux wkhtmltopdf binary
+    config = pdfkit.configuration(wkhtmltopdf="/usr/bin/wkhtmltopdf")
+    options = {
+        "enable-local-file-access": None,
+    }
     return pdfkit.from_string(html, False, configuration=config, options=options)
 
 def main():
