@@ -31,9 +31,7 @@
       align-items: center;
       margin-bottom: 20px;
     }
-    .header img {
-      height: 60px;
-    }
+    .header img { height: 60px; }
     .header .title {
       flex: 1;
       text-align: right;
@@ -48,7 +46,7 @@
     }
     .intro strong { color: var(--primary-color); }
 
-    /* Grid sections */
+    /* Two-column grid for details/rates */
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -67,31 +65,39 @@
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 4px;
     }
-    .box p {
-      margin: 6px 0;
-      font-size: 12px;
-    }
 
-    /* Charge rates table */
-    .rates-table,
-    .breakdown-table {
-      width: 100%;
+    /* Narrowed rates table */
+    .rates-table {
+      width: auto;
+      max-width: 400px;
+      margin: 0 auto 20px;
       border-collapse: collapse;
-      margin-bottom: 20px;
     }
     .rates-table th,
-    .rates-table td,
-    .breakdown-table th,
-    .breakdown-table td {
+    .rates-table td {
       border: 1px solid var(--border-color);
       padding: 6px;
-      text-align: left;
       font-size: 11px;
+      text-align: left;
     }
     .rates-table th {
       background: var(--accent-color);
       color: #fff;
       font-weight: 700;
+    }
+
+    /* Breakdown table */
+    .breakdown-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    .breakdown-table th,
+    .breakdown-table td {
+      border: 1px solid var(--border-color);
+      padding: 6px;
+      font-size: 11px;
+      text-align: left;
     }
     .breakdown-table th {
       background: #f5f5f5;
@@ -106,30 +112,32 @@
       margin-bottom: 30px;
     }
 
-    /* Signatures */
+    /* Signatures side-by-side */
     .sigs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
+      display: flex;
+      justify-content: space-between;
       margin-top: 40px;
     }
     .sig-block {
-      text-align: center;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     .sig-block img {
       border: 1px solid var(--border-color);
-      width: 200px;
-      height: 80px;
+      width: 180px;
+      height: 72px;
       object-fit: contain;
-      margin-bottom: 6px;
     }
     .sig-info {
       font-size: 11px;
-      border-top: 1px solid var(--border-color);
-      padding-top: 6px;
       color: var(--text-color);
     }
-    .sig-info strong {
+    .sig-info p {
+      margin: 4px 0;
+    }
+    .sig-info p strong {
       display: inline-block;
       width: 70px;
       text-align: right;
@@ -157,33 +165,31 @@
     Please contact us on <strong>0800 772 3959</strong> or email <strong>info@prlsitesolutions.co.uk</strong> if you have any queries.
   </div>
 
-  <!-- YOUR DETAILS & SUPPLY DETAILS -->
+  <!-- DETAILS GRID -->
   <div class="grid-2">
     <div class="box">
       <h3>Your Details</h3>
-      <p><strong>Company Name:</strong> {{ company_name }}</p>
+      <p><strong>Company:</strong> {{ company_name }}</p>
       <p><strong>Address:</strong> {{ address }}</p>
       <p><strong>Reg. No:</strong> {{ reg_no }}</p>
     </div>
     <div class="box">
       <h3>Supply Details</h3>
-      <p><strong>For the Supply of:</strong> {{ supply_of }}</p>
-      <p><strong>Site Location:</strong> {{ site_location }}</p>
-      <p><strong>Start Date:</strong> {{ start_date }}</p>
+      <p><strong>Supply of:</strong> {{ supply_of }}</p>
+      <p><strong>Location:</strong> {{ site_location }}</p>
+      <p><strong>Start:</strong> {{ start_date }}</p>
     </div>
   </div>
 
-  <!-- CHARGE RATES & BREAKDOWN -->
+  <!-- RATES & BREAKDOWN -->
   <div class="grid-2">
     <div>
       <table class="rates-table">
         <tr><th>Description</th><th>Rate</th><th>Basis</th></tr>
         {% for desc, rate, basis in rates %}
-          <tr>
-            <td>{{ desc }}</td>
-            <td>{{ rate }}</td>
-            <td>{{ basis }}</td>
-          </tr>
+        <tr>
+          <td>{{ desc }}</td><td>{{ rate }}</td><td>{{ basis }}</td>
+        </tr>
         {% endfor %}
       </table>
     </div>
@@ -197,10 +203,8 @@
     </div>
   </div>
 
-  <!-- ADDITIONAL INFO -->
-  <div class="additional">
-    {{ terms }}
-  </div>
+  <!-- ADDITIONAL -->
+  <div class="additional">{{ terms }}</div>
 
   <!-- SIGNATURES -->
   <div class="sigs">
@@ -212,7 +216,6 @@
         <p><strong>Date:</strong> {{ signer_date }}</p>
       </div>
     </div>
-
     <div class="sig-block">
       <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature"/>
       <div class="sig-info">
