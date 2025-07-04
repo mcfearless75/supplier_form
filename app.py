@@ -10,7 +10,7 @@ from datetime import datetime
 # ─── Load & encode static images ────────────────────────
 with open("logo.png", "rb") as f:
     logo_b64 = base64.b64encode(f.read()).decode()
-with open("kt.png", "rb") as f:
+with open("kt.jpg", "rb") as f:
     kt_b64 = base64.b64encode(f.read()).decode()
 
 def generate_pdf_bytes(fields):
