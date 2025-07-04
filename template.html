@@ -5,7 +5,6 @@
   <title>Supply Agreement</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
     :root {
       --blue: #005f8c;
       --light-blue: #e6f2fb;
@@ -13,135 +12,64 @@
       --font: 'Roboto', sans-serif;
       --text: #222;
     }
-
-    /* ─── RESET & BODY ─────────────────────────────────── */
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
     body {
-      margin: 20px;
-      font-family: var(--font);
-      color: var(--text);
-      font-size: 11px;
-      line-height: 1.4;
+      margin:20px; font-family:var(--font); color:var(--text);
+      font-size:11px; line-height:1.4;
     }
-    table { border-collapse: collapse; margin-bottom: 16px; }
+    table { border-collapse:collapse; margin-bottom:16px; width:100%; }
     th, td {
-      border: 1px solid var(--border);
-      padding: 6px 8px;
-      vertical-align: top;
-      font-size: 10.5px;
+      border:1px solid var(--border); padding:6px 8px;
+      vertical-align:top; font-size:10.5px;
     }
     th {
-      background: var(--light-blue);
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 10px;
+      background:var(--light-blue); font-weight:700;
+      text-transform:uppercase; font-size:10px;
     }
-
-    /* ─── HEADER BANNER ───────────────────────────────── */
     .header-bar {
-      background: var(--blue);
-      padding: 12px 20px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      margin-bottom: 24px;
+      background:var(--blue); padding:12px 20px; border-radius:6px;
+      display:flex; align-items:center; margin-bottom:24px;
     }
-    .header-bar img {
-      height: 60px;
-      margin-right: 16px;
-    }
+    .header-bar img { height:60px; margin-right:16px; }
     .header-bar h1 {
-      flex: 1;
-      text-align: right;
-      color: #fff;
-      font-size: 20px;
-      margin: 0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      flex:1; text-align:right; color:#fff; font-size:20px;
+      margin:0; text-transform:uppercase; letter-spacing:1px;
     }
-
-    /* ─── INTRO TEXT ──────────────────────────────────── */
-    .intro {
-      font-size: 10.5px;
-      margin-bottom: 20px;
-    }
-    .intro strong { color: var(--blue); }
-
-    /* ─── TWO-COLUMN SECTIONS ────────────────────────── */
+    .intro { font-size:10.5px; margin-bottom:20px; }
+    .intro strong { color:var(--blue); }
     .section-grid {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 20px;
+      display:flex; justify-content:space-between; gap:16px; margin-bottom:20px;
     }
-    .inner-table {
-      width: 48%;
-    }
-
-    /* ─── ADDITIONAL INFORMATION FULL-WIDTH ──────────── */
-    .additional-full {
-      width: 100%;
-      margin-bottom: 16px;
-    }
-    .additional-full th {
-      text-align: center;
-    }
-
-    /* ─── SIGNATURE BLOCKS ───────────────────────────── */
+    .inner-table { width:48%; }
     .signatures {
-      display: flex;
-      gap: 16px;
-      margin-top: 28px;
+      display:flex; justify-content:space-between; gap:16px; margin-top:28px;
     }
-    .sig-block {
-      flex: 1;               /* equal width */
+    .sig-block { flex:1; }
+    .sig-block img {
+      max-width:200px; max-height:120px; width:auto; height:auto;
+      border:1px solid var(--border); display:block; margin-bottom:8px;
     }
-    .sig-img {
-      width: 100%;
-      height: 120px;
-      border: 1px solid var(--border);
-      /* removed overflow:hidden so border never clips */
-      margin-bottom: 8px;
-    }
-    .sig-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-    .sig-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 10px;
-    }
+    .sig-table { width:100%; border-collapse:collapse; font-size:10px; }
     .sig-table th, .sig-table td {
-      border: 1px solid var(--border);
-      padding: 4px 6px;
+      border:1px solid var(--border); padding:4px 6px;
     }
     .sig-table th {
-      background: var(--light-blue);
-      text-align: center;
-      text-transform: uppercase;
+      background:var(--light-blue); text-align:center;
+      text-transform:uppercase;
     }
-
     .footer-note {
-      font-size: 9px;
-      color: #555;
-      margin-top: 20px;
+      font-size:9px; color:#555; margin-top:20px;
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
+  <!-- HEADER BANNER -->
   <div class="header-bar">
-    <img src="data:image/png;base64,{{ logo_b64 }}" alt="Logo" />
+    <img src="data:image/png;base64,{{ logo_b64 }}" alt="Logo"/>
     <h1>Supply Agreement</h1>
   </div>
 
-  <!-- INTRO -->
+  <!-- INTRO TEXT -->
   <p class="intro">
     This agreement is issued in conjunction with our Terms of Business. It confirms the details of the supply of temporary workers to you and our agreed charge rates (exclusive of VAT).<br/>
     Please contact us on <strong>0800 772 3959</strong> or email <strong>info@prlsitesolutions.co.uk</strong> if you have any queries.
@@ -177,25 +105,22 @@
     </table>
     <table class="inner-table">
       <tr><th>Breakdown</th></tr>
-      <tr><td>First 40 hrs Mon–Fri (including breaks)</td></tr>
-      <tr><td>After 40 hrs Mon–Fri &amp; all hrs Saturday</td></tr>
-      <tr><td>All hrs Sunday</td></tr>
+      {% for line in breakdown %}
+      <tr><td>{{ line }}</td></tr>
+      {% endfor %}
     </table>
   </div>
 
-  <!-- ADDITIONAL INFORMATION (FULL WIDTH) -->
-  <table class="additional-full">
+  <!-- ADDITIONAL INFORMATION -->
+  <table>
     <tr><th>Additional Information</th></tr>
     <tr><td>{{ terms }}</td></tr>
   </table>
 
-  <!-- SIGNATURES -->
+  <!-- SIGNATURE BLOCKS -->
   <div class="signatures">
-    <!-- PRL SIGNATURE -->
     <div class="sig-block">
-      <div class="sig-img">
-        <img src="data:image/png;base64,{{ kt_b64 }}" alt="PRL Signature" />
-      </div>
+      <img src="data:image/png;base64,{{ kt_b64 }}" alt="PRL Signature"/>
       <table class="sig-table">
         <tr><th colspan="2">Signed on behalf of PRL Site Solutions</th></tr>
         <tr><td>Signed by:</td><td>{{ signer_name }}</td></tr>
@@ -203,12 +128,8 @@
         <tr><td>Date:</td><td>{{ signer_date }}</td></tr>
       </table>
     </div>
-
-    <!-- CLIENT SIGNATURE (blank) -->
     <div class="sig-block">
-      <div class="sig-img">
-        <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature Box" />
-      </div>
+      <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature Box"/>
       <table class="sig-table">
         <tr><th colspan="2">Signed on behalf of the Client</th></tr>
         <tr><td>Signed by:</td><td>&nbsp;</td></tr>

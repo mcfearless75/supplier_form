@@ -3,6 +3,7 @@ import base64
 import pandas as pd
 import streamlit as st
 from PIL import Image
+from streamlit_drawable_canvas import st_canvas
 from jinja2 import Environment, FileSystemLoader
 import pdfkit
 from datetime import datetime
@@ -10,32 +11,30 @@ from datetime import datetime
 # ─── Load & encode static images ────────────────────────
 with open("logo.png", "rb") as f:
     logo_b64 = base64.b64encode(f.read()).decode()
-with open("kt.jpg", "rb") as f:
+with open("kt.png", "rb") as f:
     kt_b64 = base64.b64encode(f.read()).decode()
 
 def generate_pdf_bytes(fields):
-    """Render the Jinja2 HTML template to PDF bytes, with a blank signature box."""
-    # Generate a blank white PNG for the client signature
-    blank = Image.new("RGB", (400, 120), "white")
-    buf = io.BytesIO()
-    blank.save(buf, format="PNG")
-    client_sig_b64 = base64.b64encode(buf.getvalue()).decode()
-
+    """
+    Render the Jinja2 HTML template to PDF bytes, embedding the (blank) client signature.
+    """
     # Render HTML
     env = Environment(loader=FileSystemLoader("."))
     tpl = env.get_template("template.html")
-    html = tpl.render(**fields, client_sig_b64=client_sig_b64)
+    html = tpl.render(**fields)
 
-    # HTML → PDF: point at the Linux wkhtmltopdf binary
+    # Point to the Linux wkhtmltopdf binary
     config = pdfkit.configuration(wkhtmltopdf="/usr/bin/wkhtmltopdf")
     options = {"enable-local-file-access": None}
-    return pdfkit.from_string(html, False, configuration=config, options=options)
+    pdf = pdfkit.from_string(html, False, configuration=config, options=options)
+    return pdf
 
 def main():
     st.set_page_config(page_title="PRL Site Solutions – Supply Agreement", layout="wide")
 
     # ─── Global CSS: Roboto + Card Styling ─────────────────
-    st.markdown("""<style>
+    st.markdown("""
+    <style>
       @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
       * { font-family: 'Roboto', sans-serif !important; }
       .stApp .block-container { padding-top:80px!important; max-width:760px; margin:auto; }
@@ -53,18 +52,19 @@ def main():
         border-radius:6px!important; padding:.6em 1em!important; font-weight:600!important;
       }
       .stButton>button:hover { background:#008fcc!important; }
-    </style>""", unsafe_allow_html=True)
+    </style>
+    """, unsafe_allow_html=True)
 
     # ─── HEADER ─────────────────────────────────────────────
     with st.container():
         st.markdown("<div class='header-card'>", unsafe_allow_html=True)
-        cols = st.columns([1, 4])
+        cols = st.columns([1,4])
         with cols[0]:
             st.image(f"data:image/png;base64,{logo_b64}", width=80)
         with cols[1]:
             st.markdown("## SUPPLY AGREEMENT")
             st.write(
-                "This agreement is issued in conjunction with our Terms of Business.  \n"
+                "This agreement is issued in conjunction with our Terms of Business.\n"
                 "Please contact us on **0800 772 3959** or email **info@prlsitesolutions.co.uk** if you have any queries."
             )
         st.markdown("</div>", unsafe_allow_html=True)
@@ -91,16 +91,15 @@ def main():
     with st.container():
         st.markdown("<div class='section-card'>", unsafe_allow_html=True)
         st.markdown("## Our Charge Rates")
-        default_rates = {
+        df_rates = pd.DataFrame({
             "Description": [
                 "Basic Rate (Day)", "Basic Rate (Night)",
                 "Overtime Rate (1)", "Overtime Rate (2)",
                 "Expenses", "Lodge"
             ],
-            "Rate": ["£29.90", "£38.87", "£42.90", "£50.96", "£–", "£60"],
-            "Basis": ["Per Hour", "Per Hour", "Per Hour", "Per Hour", "Per Day", ""]
-        }
-        df_rates = pd.DataFrame(default_rates)
+            "Rate": ["£29.90","£38.87","£42.90","£50.96","£–","£60"],
+            "Basis": ["Per Hour","Per Hour","Per Hour","Per Hour","Per Day",""]
+        })
         try:
             rates_df = st.data_editor(df_rates, num_rows="fixed", key="rates")
         except:
@@ -108,44 +107,57 @@ def main():
         rates = list(rates_df.itertuples(index=False, name=None))
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ─── ADDITIONAL INFO ────────────────────────────────────
+    # ─── BREAKDOWN ────────────────────────────────────────
+    with st.container():
+        st.markdown("<div class='section-card'>", unsafe_allow_html=True)
+        st.markdown("## Breakdown")
+        df_bd = pd.DataFrame({
+            "Breakdown": [
+                "First 40 hrs Mon–Fri (including breaks)",
+                "After 40 hrs Mon–Fri & all hrs Saturday",
+                "All hrs Sunday"
+            ]
+        })
+        try:
+            bd_df = st.data_editor(df_bd, num_rows="fixed", key="breakdown")
+        except:
+            bd_df = st.experimental_data_editor(df_bd, num_rows="fixed", key="breakdown")
+        breakdown = bd_df["Breakdown"].tolist()
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    # ─── ADDITIONAL INFO ───────────────────────────────────
     with st.container():
         st.markdown("<div class='section-card'>", unsafe_allow_html=True)
         st.markdown("## Additional Information")
         terms = st.text_area("Notes (e.g., breaks)", "Breaks to be paid (15 min, 30 min, 15 min).", height=80)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ─── PRL SIGNATURE ───────────────────────────────────────
+    # ─── PRL SIGNATURE ─────────────────────────────────────
     prl_date = datetime.today().strftime("%d/%m/%Y")
-    with st.container():
-        st.markdown("<div class='section-card'>", unsafe_allow_html=True)
-        st.markdown("## PRL Signature")
-        st.write(f"Date: {prl_date}")
-        st.markdown("</div>", unsafe_allow_html=True)
 
-    # ─── GENERATE & DOWNLOAD & EMAIL LINK ──────────────────
+    # ─── GENERATE & DOWNLOAD & EMAIL ───────────────────────
     if st.button("📄 Generate PDF"):
         fields = {
-            "logo_b64":       logo_b64,
-            "kt_b64":         kt_b64,
-            "company_name":   company_name,
-            "address":        address.replace("\n", "<br/>"),
-            "reg_no":         reg_no,
-            "supply_of":      supply_of,
-            "site_location":  site_location,
-            "start_date":     start_date.strftime("%B %Y"),
-            "rates":          rates,
-            "terms":          terms.replace("\n", "<br/>"),
-            "signer_name":    "Keenan Thomas",
+            "logo_b64":      logo_b64,
+            "kt_b64":        kt_b64,
+            "company_name":  company_name,
+            "address":       address.replace("\n","<br/>"),
+            "reg_no":        reg_no,
+            "supply_of":     supply_of,
+            "site_location": site_location,
+            "start_date":    start_date.strftime("%B %Y"),
+            "rates":         rates,
+            "breakdown":     breakdown,
+            "terms":         terms.replace("\n","<br/>"),
+            "signer_name":   "Keenan Thomas",
             "signer_position":"Managing Director",
-            "signer_date":    prl_date
+            "signer_date":   prl_date
         }
-
         try:
             pdf_bytes = generate_pdf_bytes(fields)
-        except Exception as err:
+        except Exception as e:
             st.error("❌ PDF generation failed:")
-            st.error(f"  • {type(err).__name__}: {err}")
+            st.error(f" • {type(e).__name__}: {e}")
             return
 
         st.session_state["pdf"]     = pdf_bytes
@@ -153,19 +165,17 @@ def main():
         st.success("✅ PDF is ready!")
 
     if "pdf" in st.session_state:
-        pdf_data = st.session_state["pdf"]
-        cname    = st.session_state["company"]
         st.download_button(
             "⬇️ Download Supply Agreement PDF",
-            data=pdf_data,
-            file_name=f"supply_agreement_{cname}.pdf",
+            data=st.session_state["pdf"],
+            file_name=f"supply_agreement_{st.session_state['company']}.pdf",
             mime="application/pdf"
         )
 
-        subject = f"New Supply Agreement – {cname}".replace(" ", "%20")
+        subject = f"New Supply Agreement – {st.session_state['company']}".replace(" ","%20")
         body    = (
             "Hello,%0A%0A"
-            f"Please find attached the Supply Agreement for {cname}.%0A%0A"
+            f"Please find attached the Supply Agreement for {st.session_state['company']}.%0A%0A"
             "Best regards,%0APRLSiteSolutions"
         )
         mailto = f"mailto:info@prlsitesolutions.co.uk?subject={subject}&body={body}"
@@ -175,7 +185,7 @@ def main():
             'text-decoration:none;">✉️ Compose Email</a>',
             unsafe_allow_html=True
         )
-        st.caption("👉 Remember to attach the downloaded PDF in your mail client before sending.")
+        st.caption("👉 Remember to attach the downloaded PDF before sending.")
 
 if __name__ == "__main__":
     main()
