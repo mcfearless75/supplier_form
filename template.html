@@ -58,28 +58,24 @@
       letter-spacing: 1px;
     }
 
-    /* INTRO TEXT */
+    /* INTRO */
     .intro {
       font-size: 10.5px;
       margin-bottom: 20px;
     }
     .intro strong { color: var(--blue); }
 
-    /* TWO-COLUMN LAYOUT FOR YOUR/SUPPLY & RATES/BREAKDOWN */
+    /* TWO-COLUMN LAYOUT */
     .section-grid {
       display: flex;
       justify-content: space-between;
       gap: 16px;
       margin-bottom: 20px;
     }
-    .inner-table {
-      width: 48%;
-    }
+    .inner-table { width: 48%; }
 
     /* FULL-WIDTH ADDITIONAL INFO */
-    .full-width {
-      width: 100%;
-    }
+    .full-width { width: 100%; }
 
     /* SIGNATURE BLOCKS */
     .signatures {
@@ -95,10 +91,11 @@
       box-sizing: border-box;
     }
     .sig-block img {
-      max-width: 100%;
+      max-width: 180px;      /* reduced size */
       height: auto;
       display: block;
       margin-bottom: 8px;
+      border: 1px solid var(--border);
     }
     .sig-table {
       width: 100%;
@@ -133,10 +130,8 @@
 
   <!-- INTRO -->
   <p class="intro">
-    This agreement is issued in conjunction with our Terms of Business. 
-    It confirms the details of the supply of temporary workers to you and our agreed charge rates (exclusive of VAT).<br/>
-    Please contact us on <strong>0800 772 3959</strong> or email 
-    <strong>info@prlsitesolutions.co.uk</strong> if you have any queries.
+    This agreement is issued in conjunction with our Terms of Business. It confirms the details of the supply of temporary workers to you and our agreed charge rates (exclusive of VAT).<br/>
+    Please contact us on <strong>0800 772 3959</strong> or email <strong>info@prlsitesolutions.co.uk</strong> if you have any queries.
   </p>
 
   <!-- YOUR DETAILS & SUPPLY DETAILS -->
@@ -162,7 +157,7 @@
       {% for desc, rate, basis in rates %}
       <tr>
         <td>{{ desc }}</td>
-        <td style="text-align:right;">{{ rate }}</td>
+        <td style="text-align:right">{{ rate }}</td>
         <td>{{ basis }}</td>
       </tr>
       {% endfor %}
@@ -175,7 +170,7 @@
     </table>
   </div>
 
-  <!-- ADDITIONAL INFORMATION (FULL-WIDTH) -->
+  <!-- ADDITIONAL INFO -->
   <table class="full-width">
     <tr><th>Additional Information</th></tr>
     <tr><td>{{ terms }}</td></tr>
@@ -185,7 +180,7 @@
   <div class="signatures">
     <!-- PRL SIGNATURE -->
     <div class="sig-block">
-      <img src="data:image/png;base64,{{ kt_b64 }}" alt="PRL Signature" />
+      <img src="data:image/jpeg;base64,{{ kt_b64 }}" alt="PRL Signature" />
       <table class="sig-table">
         <tr><th colspan="2">Signed on behalf of PRL Site Solutions</th></tr>
         <tr><td>Signed by:</td><td>{{ signer_name }}</td></tr>
@@ -193,8 +188,7 @@
         <tr><td>Date:</td><td>{{ signer_date }}</td></tr>
       </table>
     </div>
-
-    <!-- CLIENT SIGNATURE (blank box) -->
+    <!-- CLIENT SIGNATURE (blank) -->
     <div class="sig-block">
       <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature Box" />
       <table class="sig-table">
@@ -207,8 +201,7 @@
   </div>
 
   <p class="footer-note">
-    Non-acknowledgement of this agreement and acceptance of temporary workers supplied to you by PRL Site Solutions 
-    will constitute acceptance of these terms and rates together with our Terms of Business.
+    Non-acknowledgement of this agreement and acceptance of temporary workers supplied to you by PRL Site Solutions will constitute acceptance of these terms and rates together with our Terms of Business.
   </p>
 
 </body>
