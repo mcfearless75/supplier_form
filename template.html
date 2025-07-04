@@ -14,7 +14,7 @@
       --text: #222;
     }
 
-    /* ─── GLOBAL RESET ──────────────────────────────────── */
+    /* ─── RESET & BODY ─────────────────────────────────── */
     body {
       margin: 20px;
       font-family: var(--font);
@@ -46,7 +46,7 @@
       margin-bottom: 24px;
     }
     .header-bar img {
-      height: 80px;
+      height: 60px;
       margin-right: 16px;
     }
     .header-bar h1 {
@@ -94,13 +94,12 @@
       flex: 0 0 48%;
     }
     .sig-block img {
-      max-width: 100%;
-      max-height: 100px;
-      width: auto;
-      height: auto;
+      width: 100%;
+      height: 120px;
+      object-fit: contain;
       border: 1px solid var(--border);
-      display: block;
       margin-bottom: 8px;
+      display: block;
     }
     .sig-table {
       width: 100%;
@@ -108,7 +107,7 @@
       font-size: 10px;
     }
     .sig-table th, .sig-table td {
-      border: 2px solid var(--border);
+      border: 1px solid var(--border);
       padding: 4px 6px;
     }
     .sig-table th {
@@ -139,7 +138,7 @@
     Please contact us on <strong>0800 772 3959</strong> or email <strong>info@prlsitesolutions.co.uk</strong> if you have any queries.
   </p>
 
-  <!-- YOUR DETAILS & SUPPLY DETAILS -->
+  <!-- YOUR & SUPPLY DETAILS -->
   <div class="section-grid">
     <table class="inner-table">
       <tr><th colspan="2">Your Details</th></tr>
@@ -155,14 +154,10 @@
     </table>
   </div>
 
-  <!-- CHARGE RATES & BREAKDOWN -->
+  <!-- RATES & BREAKDOWN -->
   <div class="section-grid">
     <table class="inner-table">
-      <tr>
-        <th>Description</th>
-        <th style="width:25%;">Rate</th>
-        <th style="width:25%;">Basis</th>
-      </tr>
+      <tr><th>Description</th><th style="width:25%;">Rate</th><th style="width:25%;">Basis</th></tr>
       {% for desc, rate, basis in rates %}
       <tr>
         <td>{{ desc }}</td>
@@ -179,7 +174,7 @@
     </table>
   </div>
 
-  <!-- ADDITIONAL INFORMATION (FULL WIDTH) -->
+  <!-- ADDITIONAL INFO (FULL WIDTH) -->
   <table class="full-width">
     <tr><th>Additional Information</th></tr>
     <tr><td>{{ terms }}</td></tr>
@@ -187,9 +182,8 @@
 
   <!-- SIGNATURES -->
   <div class="signatures">
-    <!-- PRL SIGNATURE -->
     <div class="sig-block">
-      <img src="data:image/png;base64,{{ kt_b64 }}" alt="PRL Signature" />
+      <img src="data:image/png;base64,{{ kt_b64 }}" alt="PRL Signature"/>
       <table class="sig-table">
         <tr><th colspan="2">Signed on behalf of PRL Site Solutions</th></tr>
         <tr><td>Signed by:</td><td>{{ signer_name }}</td></tr>
@@ -197,9 +191,8 @@
         <tr><td>Date:</td><td>{{ signer_date }}</td></tr>
       </table>
     </div>
-    <!-- CLIENT SIGNATURE (BLANK) -->
     <div class="sig-block">
-      <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature Box" />
+      <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature Box"/>
       <table class="sig-table">
         <tr><th colspan="2">Signed on behalf of the Client</th></tr>
         <tr><td>Signed by:</td><td>&nbsp;</td></tr>
@@ -209,7 +202,6 @@
     </div>
   </div>
 
-  <!-- FOOTER NOTE -->
   <p class="footer-note">
     Non-acknowledgement of this agreement and acceptance of temporary workers supplied to you by PRL Site Solutions will constitute acceptance of these terms and rates together with our Terms of Business.
   </p>
