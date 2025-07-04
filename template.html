@@ -5,36 +5,26 @@
   <title>Supply Agreement</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
     :root {
-      --accent: #005f8c;
-      --light-accent: #e3f2fd;
+      --blue: #005f8c;
+      --light-blue: #e6f2fb;
       --border: #333;
-      --font-base: 'Roboto', sans-serif;
+      --font: 'Roboto', sans-serif;
       --text: #222;
     }
+
     body {
       margin: 20px;
-      font-family: var(--font-base);
+      font-family: var(--font);
       color: var(--text);
       font-size: 12px;
       line-height: 1.4;
     }
-    table { border-collapse: collapse; width: 100%; }
-    th, td {
-      border: 1px solid var(--border);
-      padding: 6px 8px;
-      vertical-align: top;
-    }
-    th {
-      background: var(--light-accent);
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 11px;
-    }
 
-    /* HEADER BAR */
+    /* HEADER BANNER */
     .header-bar {
-      background: var(--accent);
+      background: var(--blue);
       padding: 12px 20px;
       border-radius: 6px;
       display: flex;
@@ -42,26 +32,46 @@
       margin-bottom: 20px;
     }
     .header-bar img {
-      height: 80px;
+      height: 60px;
       margin-right: 20px;
     }
     .header-bar h1 {
-      color: #fff;
-      margin: 0;
-      font-size: 24px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
       flex: 1;
       text-align: right;
+      color: #fff;
+      font-size: 22px;
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
+    /* INTROS */
     .intro {
       font-size: 11px;
       margin-bottom: 20px;
     }
-    .intro strong { color: var(--accent); }
+    .intro strong { color: var(--blue); }
 
-    /* TWO-COLUMN SECTION FOR RATES & BREAKDOWN */
+    /* GENERIC TABLE STYLES */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      vertical-align: top;
+    }
+    th {
+      background: var(--light-blue);
+      font-weight: 700;
+      text-align: left;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+
+    /* TWO-COLUMN LAYOUT */
     .section-grid {
       display: flex;
       gap: 20px;
@@ -78,25 +88,32 @@
       margin-top: 30px;
     }
     .sig-block img {
-      max-width: 240px;    /* reduced size */
+      max-width: 180px;
       height: auto;
-      object-fit: contain;
       border: 1px solid var(--border);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+    }
+    .sig-block .sig-table {
+      width: 100%;
+      border-collapse: collapse;
     }
     .sig-block .sig-table th,
     .sig-block .sig-table td {
-      font-size: 10px;
+      border: 1px solid var(--border);
       padding: 4px 6px;
+      font-size: 10px;
     }
     .sig-block .sig-table th {
-      background: var(--light-accent);
+      background: var(--light-blue);
+      text-align: center;
+      text-transform: uppercase;
+      font-size: 10px;
     }
 
     .footer-note {
       font-size: 10px;
-      margin-top: 25px;
       color: #555;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -108,12 +125,13 @@
     <h1>Supply Agreement</h1>
   </div>
 
+  <!-- INTRO -->
   <p class="intro">
-    This agreement is issued in conjunction with our Terms of Business. It confirms the details of the supply of temporary workers to you and our agreed charge rates (exclusive of VAT).<br>
+    This agreement is issued in conjunction with our Terms of Business. It confirms the details of the supply of temporary workers to you and our agreed charge rates (exclusive of VAT).<br/>
     Please contact us on <strong>0800 772 3959</strong> or email <strong>info@prlsitesolutions.co.uk</strong> if you have any queries.
   </p>
 
-  <!-- YOUR DETAILS / SUPPLY DETAILS (unchanged) -->
+  <!-- YOUR DETAILS & SUPPLY DETAILS -->
   <div class="section-grid">
     <table class="inner-table">
       <tr><th colspan="2">Your Details</th></tr>
@@ -129,25 +147,23 @@
     </table>
   </div>
 
-  <!-- RATES & BREAKDOWN -->
+  <!-- CHARGE RATES & BREAKDOWN -->
   <div class="section-grid">
     <table class="inner-table">
       <tr><th>Description</th><th>Rate</th><th>Basis</th></tr>
       {% for desc, rate, basis in rates %}
-      <tr>
-        <td>{{ desc }}</td><td>{{ rate }}</td><td>{{ basis }}</td>
-      </tr>
+      <tr><td>{{ desc }}</td><td>{{ rate }}</td><td>{{ basis }}</td></tr>
       {% endfor %}
     </table>
     <table class="inner-table">
-      <tr><th>BREAKDOWN</th></tr>
+      <tr><th>Breakdown</th></tr>
       <tr><td>First 40 hrs Mon–Fri (including breaks)</td></tr>
       <tr><td>After 40 hrs Mon–Fri &amp; all hrs Saturday</td></tr>
       <tr><td>All hrs Sunday</td></tr>
     </table>
   </div>
 
-  <!-- ADDITIONAL INFORMATION -->
+  <!-- ADDITIONAL INFO -->
   <table>
     <tr><th>Additional Information</th></tr>
     <tr><td>{{ terms }}</td></tr>
@@ -164,8 +180,9 @@
         <tr><td>Date:</td><td>{{ signer_date }}</td></tr>
       </table>
     </div>
+
     <div class="sig-block">
-      <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Sig" />
+      <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature" />
       <table class="sig-table">
         <tr><th colspan="2">Signed on behalf of the Client</th></tr>
         <tr><td>Signed by:</td><td>&nbsp;</td></tr>
@@ -178,5 +195,6 @@
   <p class="footer-note">
     Non‐acknowledgement of this agreement and acceptance of temporary workers supplied to you by PRL Site Solutions will constitute acceptance of these terms and rates together with our Terms of Business.
   </p>
+
 </body>
 </html>
