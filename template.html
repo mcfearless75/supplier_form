@@ -18,102 +18,102 @@
       margin: 20px;
       font-family: var(--font);
       color: var(--text);
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.4;
     }
 
-    /* HEADER BANNER */
+    /* ─── HEADER BANNER ───────────────────────────────── */
     .header-bar {
       background: var(--blue);
       padding: 12px 20px;
       border-radius: 6px;
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
     .header-bar img {
-      height: 60px;
-      margin-right: 20px;
+      height: 50px;
+      margin-right: 16px;
     }
     .header-bar h1 {
       flex: 1;
       text-align: right;
       color: #fff;
-      font-size: 22px;
+      font-size: 20px;
       margin: 0;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    /* INTROS */
+    /* ─── INTRO TEXT ──────────────────────────────────── */
     .intro {
-      font-size: 11px;
-      margin-bottom: 20px;
+      font-size: 10.5px;
+      margin-bottom: 16px;
     }
     .intro strong { color: var(--blue); }
 
-    /* GENERIC TABLE STYLES */
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-bottom: 20px;
-    }
+    /* ─── GENERIC TABLE STYLES ───────────────────────── */
+    table { border-collapse: collapse; margin-bottom: 16px; }
     th, td {
       border: 1px solid var(--border);
       padding: 6px 8px;
       vertical-align: top;
+      font-size: 10.5px;
     }
     th {
       background: var(--light-blue);
       font-weight: 700;
-      text-align: left;
       text-transform: uppercase;
-      font-size: 11px;
+      font-size: 10px;
     }
 
-    /* TWO-COLUMN LAYOUT */
+    /* ─── TWO-COLUMN SECTIONS ────────────────────────── */
     .section-grid {
       display: flex;
-      gap: 20px;
-      margin-bottom: 20px;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
     }
-    .section-grid .inner-table {
-      flex: 1;
+    .inner-table {
+      width: 49%;
     }
 
-    /* SIGNATURES */
+    /* ─── SIGNATURE BLOCKS ───────────────────────────── */
     .signatures {
       display: flex;
-      gap: 40px;
-      margin-top: 30px;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .sig-block {
+      width: 49%;
     }
     .sig-block img {
       max-width: 180px;
+      width: 100%;
       height: auto;
       border: 1px solid var(--border);
       margin-bottom: 8px;
     }
-    .sig-block .sig-table {
+    .sig-table {
       width: 100%;
       border-collapse: collapse;
-    }
-    .sig-block .sig-table th,
-    .sig-block .sig-table td {
-      border: 1px solid var(--border);
-      padding: 4px 6px;
       font-size: 10px;
     }
-    .sig-block .sig-table th {
+    .sig-table th, .sig-table td {
+      border: 1px solid var(--border);
+      padding: 4px 6px;
+    }
+    .sig-table th {
       background: var(--light-blue);
       text-align: center;
       text-transform: uppercase;
-      font-size: 10px;
     }
 
     .footer-note {
-      font-size: 10px;
+      font-size: 9px;
       color: #555;
-      margin-top: 20px;
+      margin-top: 16px;
     }
   </style>
 </head>
@@ -135,13 +135,13 @@
   <div class="section-grid">
     <table class="inner-table">
       <tr><th colspan="2">Your Details</th></tr>
-      <tr><td>Company Name:</td><td>{{ company_name }}</td></tr>
+      <tr><td style="width:30%;">Company Name:</td><td>{{ company_name }}</td></tr>
       <tr><td>Address:</td><td>{{ address }}</td></tr>
       <tr><td>Reg. No:</td><td>{{ reg_no }}</td></tr>
     </table>
     <table class="inner-table">
       <tr><th colspan="2">Supply Details</th></tr>
-      <tr><td>For the Supply of:</td><td>{{ supply_of }}</td></tr>
+      <tr><td style="width:30%;">For the Supply of:</td><td>{{ supply_of }}</td></tr>
       <tr><td>Site Location:</td><td>{{ site_location }}</td></tr>
       <tr><td>Start Date:</td><td>{{ start_date }}</td></tr>
     </table>
@@ -150,20 +150,20 @@
   <!-- CHARGE RATES & BREAKDOWN -->
   <div class="section-grid">
     <table class="inner-table">
-      <tr><th>Description</th><th>Rate</th><th>Basis</th></tr>
+      <tr><th>Description</th><th style="width:25%;">Rate</th><th style="width:25%;">Basis</th></tr>
       {% for desc, rate, basis in rates %}
-      <tr><td>{{ desc }}</td><td>{{ rate }}</td><td>{{ basis }}</td></tr>
+      <tr><td>{{ desc }}</td><td style="text-align:right;">{{ rate }}</td><td>{{ basis }}</td></tr>
       {% endfor %}
     </table>
     <table class="inner-table">
-      <tr><th>Breakdown</th></tr>
+      <tr><th>BREAKDOWN</th></tr>
       <tr><td>First 40 hrs Mon–Fri (including breaks)</td></tr>
       <tr><td>After 40 hrs Mon–Fri &amp; all hrs Saturday</td></tr>
       <tr><td>All hrs Sunday</td></tr>
     </table>
   </div>
 
-  <!-- ADDITIONAL INFO -->
+  <!-- ADDITIONAL INFORMATION -->
   <table>
     <tr><th>Additional Information</th></tr>
     <tr><td>{{ terms }}</td></tr>
@@ -171,6 +171,7 @@
 
   <!-- SIGNATURES -->
   <div class="signatures">
+    <!-- PRL SIGNATURE -->
     <div class="sig-block">
       <img src="data:image/png;base64,{{ kt_b64 }}" alt="PRL Signature" />
       <table class="sig-table">
@@ -181,6 +182,7 @@
       </table>
     </div>
 
+    <!-- CLIENT SIGNATURE (blank) -->
     <div class="sig-block">
       <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature" />
       <table class="sig-table">
@@ -193,7 +195,7 @@
   </div>
 
   <p class="footer-note">
-    Non‐acknowledgement of this agreement and acceptance of temporary workers supplied to you by PRL Site Solutions will constitute acceptance of these terms and rates together with our Terms of Business.
+    Non-acknowledgement of this agreement and acceptance of temporary workers supplied to you by PRL Site Solutions will constitute acceptance of these terms and rates together with our Terms of Business.
   </p>
 
 </body>
