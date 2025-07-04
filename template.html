@@ -14,7 +14,7 @@
       --text: #222;
     }
 
-    /* reset & body */
+    /* ─── GLOBAL RESET ──────────────────────────────────── */
     body {
       margin: 20px;
       font-family: var(--font);
@@ -46,7 +46,7 @@
       margin-bottom: 24px;
     }
     .header-bar img {
-      height: 60px;           /* bumped up */
+      height: 60px;
       margin-right: 16px;
     }
     .header-bar h1 {
@@ -77,6 +77,12 @@
       width: 48%;
     }
 
+    /* ─── FULL-WIDTH TABLE ────────────────────────────── */
+    .full-width {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
     /* ─── SIGNATURE BLOCKS ───────────────────────────── */
     .signatures {
       display: flex;
@@ -85,11 +91,10 @@
       margin-top: 28px;
     }
     .sig-block {
-      /* let content define width */
-      flex: 0 0 auto;
+      flex: 0 0 48%;
     }
     .sig-block img {
-      max-width: 200px;
+      max-width: 100%;
       max-height: 120px;
       width: auto;
       height: auto;
@@ -112,6 +117,7 @@
       text-transform: uppercase;
     }
 
+    /* ─── FOOTER NOTE ────────────────────────────────── */
     .footer-note {
       font-size: 9px;
       color: #555;
@@ -152,7 +158,11 @@
   <!-- CHARGE RATES & BREAKDOWN -->
   <div class="section-grid">
     <table class="inner-table">
-      <tr><th>Description</th><th style="width:25%;">Rate</th><th style="width:25%;">Basis</th></tr>
+      <tr>
+        <th>Description</th>
+        <th style="width:25%;">Rate</th>
+        <th style="width:25%;">Basis</th>
+      </tr>
       {% for desc, rate, basis in rates %}
       <tr>
         <td>{{ desc }}</td>
@@ -169,8 +179,8 @@
     </table>
   </div>
 
-  <!-- ADDITIONAL INFORMATION -->
-  <table>
+  <!-- ADDITIONAL INFORMATION (FULL WIDTH) -->
+  <table class="full-width">
     <tr><th>Additional Information</th></tr>
     <tr><td>{{ terms }}</td></tr>
   </table>
@@ -187,8 +197,7 @@
         <tr><td>Date:</td><td>{{ signer_date }}</td></tr>
       </table>
     </div>
-
-    <!-- CLIENT SIGNATURE (blank) -->
+    <!-- CLIENT SIGNATURE (BLANK) -->
     <div class="sig-block">
       <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature Box" />
       <table class="sig-table">
@@ -200,6 +209,7 @@
     </div>
   </div>
 
+  <!-- FOOTER NOTE -->
   <p class="footer-note">
     Non-acknowledgement of this agreement and acceptance of temporary workers supplied to you by PRL Site Solutions will constitute acceptance of these terms and rates together with our Terms of Business.
   </p>
