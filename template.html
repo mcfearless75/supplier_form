@@ -177,27 +177,40 @@
     <tr><td>{{ terms }}</td></tr>
   </table>
 
-  <!-- SIGNATURES -->
-  <div class="signatures">
-    <div class="sig-block">
-      <img src="data:image/png;base64,{{ kt_b64 }}" alt="PRL Signature">
-      <table class="sig-table">
-        <tr><th colspan="2">Signed on behalf of PRL Site Solutions</th></tr>
-        <tr><td>Signed by:</td><td>{{ signer_name }}</td></tr>
-        <tr><td>Position:</td><td>{{ signer_position }}</td></tr>
-        <tr><td>Date:</td><td>{{ signer_date }}</td></tr>
-      </table>
-    </div>
-    <div class="sig-block">
-      <img src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature">
-      <table class="sig-table">
-        <tr><th colspan="2">Signed on behalf of the Client</th></tr>
-        <tr><td>Signed by:</td><td>&nbsp;</td></tr>
-        <tr><td>Position:</td><td>&nbsp;</td></tr>
-        <tr><td>Date:</td><td>&nbsp;</td></tr>
-      </table>
-    </div>
-  </div>
+  <!-- SIGNATURES: side-by-side in one table row -->
+  <table style="width:100%; margin-top:20px; border-collapse: collapse;">
+    <tr>
+      <!-- PRL signature block -->
+      <td style="width:50%; vertical-align: top; padding-right:10px;">
+        <img class="sig-img" src="data:image/png;base64,{{ kt_b64 }}" alt="PRL Signature" />
+        <table class="sig-table" style="width:100%; border-collapse: collapse; margin-top:4px;">
+          <tr>
+            <th colspan="2" style="background:var(--light-accent); text-align:center;">
+              Signed on behalf of PRL Site Solutions
+            </th>
+          </tr>
+          <tr><td>Signed by:</td><td>{{ signer_name }}</td></tr>
+          <tr><td>Position:</td><td>{{ signer_position }}</td></tr>
+          <tr><td>Date:</td><td>{{ signer_date }}</td></tr>
+        </table>
+      </td>
+
+      <!-- Client signature block -->
+      <td style="width:50%; vertical-align: top; padding-left:10px;">
+        <img class="sig-img" src="data:image/png;base64,{{ client_sig_b64 }}" alt="Client Signature" />
+        <table class="sig-table" style="width:100%; border-collapse: collapse; margin-top:4px;">
+          <tr>
+            <th colspan="2" style="background:var(--light-accent); text-align:center;">
+              Signed on behalf of the Client
+            </th>
+          </tr>
+          <tr><td>Signed by:</td><td>&nbsp;</td></tr>
+          <tr><td>Position:</td><td>&nbsp;</td></tr>
+          <tr><td>Date:</td><td>&nbsp;</td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 
   <p class="footer-note">
     Non-acknowledgement of this agreement and acceptance of temporary workers supplied to you by PRL Site Solutions will constitute acceptance of these terms and rates together with our Terms of Business.
